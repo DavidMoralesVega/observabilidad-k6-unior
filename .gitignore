@@ -1,0 +1,20 @@
+# dependencias y compilados
+node_modules/
+.pnpm-store/
+dist/
+generated/
+coverage/
+
+# informes de Lighthouse / Lighthouse CI / k6
+front/.lighthouseci/
+front/informes/
+*.report.html
+*.report.json
+resultados*.json
+
+# entorno y sistema
+.env
+.env.local
+.DS_Store
+Thumbs.db
+*.log

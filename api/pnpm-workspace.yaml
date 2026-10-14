@@ -1,0 +1,12 @@
+packages:
+  - 'packages/*'
+allowBuilds:
+  '@parcel/watcher': true
+  '@prisma/engines': true
+  '@scarf/scarf': true
+  '@swc/core': true
+  argon2: true
+  esbuild: true
+  prisma: true
+  unrs-resolver: true
+  protobufjs: false

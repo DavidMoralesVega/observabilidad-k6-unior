@@ -1,0 +1,22 @@
+{
+  "name": "front-rendimiento",
+  "version": "1.0.0",
+  "description": "Lighthouse, Lighthouse CI y Web Vitals (Playwright) contra learn-unior.web.app",
+  "scripts": {
+    "lhci": "lhci autorun",
+    "lhci:falla": "lhci autorun --config=./lighthouserc.falla.json",
+    "vitals": "node web-vitals-playwright.cjs",
+    "vitals:lento": "node web-vitals-playwright.cjs --lento"
+  },
+  "keywords": [],
+  "author": "David Morales Vega",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@lhci/cli": "^0.15.1",
+    "lighthouse": "^13.5.0",
+    "playwright": "^1.64.1",
+    "web-vitals": "^6.2.3"
+  },
+  "private": true
+}

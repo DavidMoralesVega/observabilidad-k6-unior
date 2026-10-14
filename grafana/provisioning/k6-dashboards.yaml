@@ -1,0 +1,7 @@
+# Provisiona el dashboard oficial de k6 (grafana.com/dashboards/19665, "k6 Prometheus")
+apiVersion: 1
+providers:
+  - name: "k6"
+    type: file
+    options:
+      path: /otel-lgtm/k6-dashboards

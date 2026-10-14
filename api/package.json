@@ -1,0 +1,23 @@
+{
+  "name": "todo-monorepo",
+  "private": true,
+  "packageManager": "pnpm@11.16.0",
+  "scripts": {
+    "build": "pnpm --filter backend run build",
+    "start": "pnpm --filter backend run start",
+    "start:dev": "pnpm --filter backend run start:dev",
+    "test": "pnpm --filter backend run test",
+    "lint": "pnpm --filter backend run lint"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/engines",
+      "prisma",
+      "@swc/core",
+      "esbuild",
+      "@parcel/watcher",
+      "argon2",
+      "unrs-resolver"
+    ]
+  }
+}

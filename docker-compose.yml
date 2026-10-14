@@ -1,0 +1,78 @@
+# Módulo IV · Observabilidad: de «es lento» a «por qué es lento»
+# Un solo comando levanta Postgres + API de tareas instrumentada con OpenTelemetry
+# + grafana/otel-lgtm (Grafana, Prometheus, Tempo, Loki y el OTel Collector).
+#   docker compose up -d --build        (o: npm run levantar)
+#   docker compose down                 (o: npm run apagar)
+# Grafana:  http://localhost:3000   (sin login; el dashboard de k6 ya está cargado)
+# API:      http://localhost:3060/api   ·   Swagger: http://localhost:3060/docs
+name: observabilidad-unior
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: todo
+    ports:
+      - "5435:5432"
+    volumes:
+      - pgdata-obs:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ./api
+    ports:
+      - "3060:3060"
+    environment:
+      PORT: 3060
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/todo?schema=public
+      JWT_SECRET: clave-solo-para-clase
+      NOTIFICATION_SERVICE_URL: http://localhost:3999
+      # --- OpenTelemetry: todo por variables de entorno (sin tocar el código) ---
+      OTEL_SERVICE_NAME: api-tareas
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://lgtm:4318
+      OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
+      OTEL_TRACES_EXPORTER: otlp
+      OTEL_METRICS_EXPORTER: otlp
+      OTEL_LOGS_EXPORTER: otlp
+      # Solo lo que nos interesa ver: HTTP, Express, Nest y las consultas a Postgres
+      OTEL_NODE_ENABLED_INSTRUMENTATIONS: http,express,nestjs-core,pg
+      # Sin detectores de nube (evita el aviso MetadataLookupWarning de GCP al arrancar)
+      OTEL_NODE_RESOURCE_DETECTORS: env,host,os,process
+    working_dir: /app/packages/backend
+    # Migraciones + seed (admin@todo.com / admin123) y arranque con la instrumentación cargada antes que la app
+    command: >-
+      sh -c "npx prisma migrate deploy --config prisma7.config.ts
+      && tsx prisma/seed.ts
+      && node --require @opentelemetry/auto-instrumentations-node/register dist/src/main.js"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  lgtm:
+    image: grafana/otel-lgtm:0.36.0
+    ports:
+      - "3000:3000" # Grafana
+      - "4317:4317" # OTLP gRPC
+      - "4318:4318" # OTLP HTTP
+      - "9090:9090" # Prometheus (k6 escribe aquí con remote write)
+    environment:
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /otel-lgtm/k6-dashboards/k6-prometheus.json
+    volumes:
+      - ./grafana/provisioning/k6-dashboards.yaml:/otel-lgtm/grafana/conf/provisioning/dashboards/k6-dashboards.yaml:ro
+      - ./grafana/dashboards:/otel-lgtm/k6-dashboards:ro
+      - ./grafana/provisioning/grafana-datasources.yaml:/otel-lgtm/grafana/conf/provisioning/datasources/grafana-datasources.yaml:ro
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /tmp/ready"]
+      interval: 5s
+      timeout: 3s
+      retries: 60
+
+volumes:
+  pgdata-obs:

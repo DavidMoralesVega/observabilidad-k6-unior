@@ -1,0 +1,17 @@
+{
+  "ci": {
+    "collect": {
+      "url": ["https://learn-unior.web.app/programas/"],
+      "numberOfRuns": 3,
+      "settings": { "onlyCategories": ["performance"], "chromeFlags": "--headless=new" }
+    },
+    "assert": {
+      "assertions": {
+        "largest-contentful-paint": ["error", { "maxNumericValue": 500 }],
+        "first-contentful-paint": ["error", { "maxNumericValue": 300 }],
+        "total-byte-weight": ["warn", { "maxNumericValue": 300000 }]
+      }
+    },
+    "upload": { "target": "filesystem", "outputDir": "./informes/lhci-falla" }
+  }
+}

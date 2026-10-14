@@ -1,0 +1,18 @@
+{
+  "name": "observabilidad-k6-unior",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Módulo IV · UNIOR · Observabilidad: k6 + Grafana + OpenTelemetry + Lighthouse",
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "levantar": "docker compose up -d --build",
+    "estado": "docker compose ps",
+    "apagar": "docker compose down",
+    "humo": "k6 run k6/01-humo.js",
+    "estres": "node scripts/estres-a-grafana.mjs",
+    "trazas": "k6 run k6/08-trazas.js",
+    "resumen-trazas": "node scripts/resumen-trazas.mjs",
+    "arbol": "node scripts/arbol-traza.mjs"
+  }
+}
