@@ -102,6 +102,7 @@ npx playwright install chromium
 
 | Comando (desde `front/`) | Qué hace |
 |---|---|
+| `npm run lighthouse` | una corrida de Lighthouse (móvil simulado) contra `learn-unior.web.app/programas/`. Informe en `informes/movil.html` |
 | `npx lhci autorun` | 3 corridas de Lighthouse contra `learn-unior.web.app/programas/` con presupuesto (`lighthouserc.json`). Pasa: código 0 |
 | `npx lhci autorun --config=./lighthouserc.falla.json` | un presupuesto imposible (LCP ≤ 500 ms). Falla a propósito: código 1 |
 | `node web-vitals-playwright.cjs` | LCP, CLS e INP medidos con la librería `web-vitals` desde Playwright |

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Lighthouse, Lighthouse CI y Web Vitals (Playwright) contra learn-unior.web.app",
   "scripts": {
+    "lighthouse": "lighthouse https://learn-unior.web.app/programas/ --only-categories=performance --chrome-flags=--headless=new --output=html --output-path=./informes/movil.html",
     "lhci": "lhci autorun",
     "lhci:falla": "lhci autorun --config=./lighthouserc.falla.json",
     "vitals": "node web-vitals-playwright.cjs",
