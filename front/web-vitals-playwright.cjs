@@ -57,6 +57,15 @@ const WEB_VITALS = fs.readFileSync(path.join(__dirname, 'node_modules/web-vitals
 
   const vitals = await page.evaluate(() => window.__vitals);
   const events = await page.evaluate(() => window.__events);
-  console.log(JSON.stringify({ url, headless, browser: browser.version(), vitals, eventTimingEntries: events.length, interacciones: events.filter((e) => e.interactionId > 0).map((e) => `${e.name} ${e.duration}ms`) }, null, 2));
+  // 4) Resultado: una línea por métrica (CLS no tiene unidad; el resto, en milisegundos)
+  console.log(`${url}  (Chromium ${browser.version()}, ${headless ? 'headless' : 'con ventana'})`);
+  for (const nombre of ['LCP', 'CLS', 'INP', 'FCP', 'TTFB']) {
+    const m = vitals[nombre];
+    if (!m) { console.log(`${nombre.padEnd(5)} sin dato`); continue; }
+    const valor = nombre === 'CLS' ? m.value.toFixed(4) : `${Math.round(m.value)} ms`;
+    console.log(`${nombre.padEnd(5)} ${valor.padStart(8)}   ${m.rating}`);
+  }
+  const inter = events.filter((e) => e.interactionId > 0);
+  console.log(`eventos de interacción medidos: ${inter.length} (sin interacciones no hay INP)`);
   await browser.close();
 })();

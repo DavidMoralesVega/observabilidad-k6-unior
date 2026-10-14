@@ -43,10 +43,11 @@ try {
     if (mayor) dominante[mayor] = (dominante[mayor] ?? 0) + 1;
   }
   const n = Math.max(traces.length, 1);
-  const promedio = Object.fromEntries(Object.entries(suma).map(([k, v]) => [k, Math.round(v / n)]));
-  console.log(`${traces.length} logins con duración > ${umbral} (últimos ${minutos} min)`);
-  console.log('span que más pesa en cada traza:', dominante);
-  console.log('promedio por span (ms):', promedio);
+  const dom = Object.entries(dominante).map(([k, v]) => `${k} en ${v} de ${traces.length}`);
+  const prom = Object.entries(suma).map(([k, v]) => `${k} ${Math.round(v / n)} ms`);
+  console.log(`${traces.length} logins de más de ${umbral} (últimos ${minutos} min)`);
+  console.log(`span que más pesa:  ${dom.join(' · ') || '—'}`);
+  console.log(`promedio por span:  ${prom.join(' · ') || '—'}`);
 } catch (e) {
   console.error('No se pudo consultar Tempo. ¿Está levantado el laboratorio (npm run levantar)?');
   console.error(e.message);

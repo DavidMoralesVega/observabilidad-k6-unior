@@ -28,4 +28,11 @@ const mostrar = (s, nivel) => {
   const h = (hijos.get(s.spanId) ?? []).sort((a, b) => (BigInt(a.startTimeUnixNano) < BigInt(b.startTimeUnixNano) ? -1 : 1));
   for (const k of h) mostrar(k, nivel + 1);
 };
-for (const s of spans.values()) if (!spans.has(s.parentSpanId ?? '')) mostrar(s, 0);
+// Tempo puede devolver los ids en base64: los pasamos a hexadecimal para mostrarlos
+const hex = (id) => (/^[0-9a-f]{16}$/.test(id) ? id : Buffer.from(id, 'base64').toString('hex'));
+for (const s of spans.values()) {
+  if (spans.has(s.parentSpanId ?? '')) continue;
+  mostrar(s, 0);
+  // Si la raíz tiene un padre que no está en la traza, ese padre vino en la cabecera traceparent
+  if (s.parentSpanId) console.log(`\nel span raíz tiene un padre de afuera: ${hex(s.parentSpanId)} (lo mandó el cliente en traceparent)`);
+}

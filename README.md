@@ -105,7 +105,7 @@ npx playwright install chromium
 | `npx lhci autorun` | 3 corridas de Lighthouse contra `learn-unior.web.app/programas/` con presupuesto (`lighthouserc.json`). Pasa: código 0 |
 | `npx lhci autorun --config=./lighthouserc.falla.json` | un presupuesto imposible (LCP ≤ 500 ms). Falla a propósito: código 1 |
 | `node web-vitals-playwright.cjs` | LCP, CLS e INP medidos con la librería `web-vitals` desde Playwright |
-| `node web-vitals-playwright.cjs --lento` | lo mismo, con un clic que bloquea 300 ms: INP ≈ 320 ms |
+| `node web-vitals-playwright.cjs --lento` | lo mismo, con un clic que bloquea 300 ms: INP de unos 300 ms (needs-improvement) |
 
 Los informes quedan en `front/informes/` (no se suben a ningún servidor).
 
